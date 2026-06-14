@@ -1,0 +1,226 @@
+// This is your Prisma schema file
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ==========================================
+// AUTH
+// ==========================================
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  password      String?   // hashed with bcrypt
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  clients   Client[]
+  invoices  Invoice[]
+  projects  Project[]
+  sessions  Session[]
+  accounts  Account[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ==========================================
+// BUSINESS LOGIC
+// ==========================================
+
+model Client {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  email     String
+  phone     String?
+  company   String?
+  address   String?
+  currency  String   @default("INR")
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projects Project[]
+  invoices Invoice[]
+
+  @@map("clients")
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  userId      String
+  clientId    String
+  name        String
+  description String?
+  status      ProjectStatus @default(ACTIVE)
+  hourlyRate  Decimal?      @db.Decimal(10, 2)
+  fixedBudget Decimal?      @db.Decimal(10, 2)
+  startDate   DateTime?
+  dueDate     DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  client   Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  timeLogs TimeLog[]
+  invoices Invoice[]
+
+  @@map("projects")
+}
+
+model TimeLog {
+  id          String   @id @default(cuid())
+  projectId   String
+  description String
+  hours       Decimal  @db.Decimal(6, 2)
+  date        DateTime @default(now())
+  billable    Boolean  @default(true)
+  invoiced    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("time_logs")
+}
+
+model Invoice {
+  id             String        @id @default(cuid())
+  userId         String
+  clientId       String
+  projectId      String?
+  invoiceNumber  String        @unique
+  status         InvoiceStatus @default(DRAFT)
+  issueDate      DateTime      @default(now())
+  dueDate        DateTime
+  subtotal       Decimal       @db.Decimal(10, 2)
+  taxRate        Decimal       @default(0) @db.Decimal(5, 2)
+  taxAmount      Decimal       @default(0) @db.Decimal(10, 2)
+  discountAmount Decimal       @default(0) @db.Decimal(10, 2)
+  total          Decimal       @db.Decimal(10, 2)
+  currency       String        @default("INR")
+  notes          String?
+  terms          String?
+  magicToken     String?       @unique // for client portal access
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  user    User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  client  Client        @relation(fields: [clientId], references: [id])
+  project Project?      @relation(fields: [projectId], references: [id])
+  items   InvoiceItem[]
+  payment Payment?
+
+  @@map("invoices")
+}
+
+model InvoiceItem {
+  id          String  @id @default(cuid())
+  invoiceId   String
+  description String
+  quantity    Decimal @db.Decimal(10, 2)
+  unitPrice   Decimal @db.Decimal(10, 2)
+  total       Decimal @db.Decimal(10, 2)
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@map("invoice_items")
+}
+
+model Payment {
+  id                String        @id @default(cuid())
+  invoiceId         String        @unique
+  amount            Decimal       @db.Decimal(10, 2)
+  currency          String        @default("INR")
+  status            PaymentStatus @default(PENDING)
+  razorpayOrderId   String?       @unique
+  razorpayPaymentId String?       @unique
+  razorpaySignature String?
+  paidAt            DateTime?
+  failureReason     String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
+
+// ==========================================
+// ENUMS
+// ==========================================
+
+enum ProjectStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+  CANCELLED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  VIEWED
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
