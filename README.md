@@ -6,7 +6,7 @@
 
 A production-ready SaaS application for freelancers to manage clients, projects, time logs, and invoices — with Razorpay payment integration and GPT-4o AI proposal generation.
 
-**Live Demo:** [soloflow.vercel.app](https://soloflow.vercel.app) *(deploy link here)*
+**Live Demo:** [soloflow-invoice.vercel.app](https://soloflow-invoice.vercel.app) *(deploy link here)*
 
 ---
 
