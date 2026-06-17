@@ -49,8 +49,8 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
 
   if (!client) notFound()
 
-  const totalBilled = client.invoices.reduce((sum, i) => sum + Number(i.total), 0)
-  const totalPaid = client.invoices.filter((i) => i.status === 'PAID').reduce((sum, i) => sum + Number(i.total), 0)
+  const totalBilled = client.invoices.reduce((sum: number, i: any) => sum + Number(i.total), 0)
+  const totalPaid = client.invoices.filter((i: any) => i.status === 'PAID').reduce((sum: number, i: any) => sum + Number(i.total), 0)
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -124,7 +124,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
               <div className="p-8 text-center text-[var(--text-3)] text-sm">No invoices yet</div>
             ) : (
               <div className="divide-y divide-[#1e1e2e]">
-                {client.invoices.map((inv) => {
+                {client.invoices.map((inv: any) => {
                   const s = statusConfig[inv.status]
                   return (
                     <Link key={inv.id} href={`/dashboard/invoices/${inv.id}`}
@@ -154,7 +154,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                 <h2 className="font-semibold text-[var(--text-1)] text-sm">Projects</h2>
               </div>
               <div className="divide-y divide-[#1e1e2e]">
-                {client.projects.map((proj) => (
+                {client.projects.map((proj: any) => (
                   <div key={proj.id} className="flex items-center justify-between px-5 py-3">
                     <p className="text-sm text-[var(--text-1)]">{proj.name}</p>
                     <span className={clsx('text-xs font-medium px-2 py-0.5 rounded-lg border', projectStatusColor[proj.status])}>
