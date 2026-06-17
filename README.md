@@ -1,5 +1,7 @@
 # Soloflow 🧾
 
+![Soloflow Banner](https://res.cloudinary.com/dhjkbcdfm/image/upload/v1781679012/portfolio_projects/soloflow/dashboard_dark.png)
+
 > **AI-Powered Freelancer Client Portal & Billing SaaS**
 
 A production-ready SaaS application for freelancers to manage clients, projects, time logs, and invoices — with Razorpay payment integration and GPT-4o AI proposal generation.

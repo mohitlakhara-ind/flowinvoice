@@ -23,9 +23,12 @@ const toneInstructions = {
 
 export async function POST(req: Request) {
   const session = await auth()
-  if (!session?.user?.id) {
+  if (!session || !session.user || !session.user.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
+
+  const userId = session.user!.id
+  const userName = session.user?.name ?? 'the developer'
 
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || 'dummy' })
 
@@ -58,7 +61,7 @@ Format the proposal with proper sections using markdown. Keep it under 400 words
 ${budget ? `- Budget: ${budget}` : ''}
 ${timeline ? `- Timeline: ${timeline}` : ''}
 
-The freelancer's name is ${session.user.name ?? 'the developer'}.`
+The freelancer's name is ${userName}.`
 
   // Use streaming for better UX
   const stream = await openai.chat.completions.create({
@@ -93,7 +96,7 @@ The freelancer's name is ${session.user.name ?? 'the developer'}.`
         try {
           await prisma.proposal.create({
             data: {
-              userId: session.user.id,
+              userId,
               clientName,
               projectName,
               projectScope,
