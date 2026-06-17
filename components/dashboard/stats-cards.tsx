@@ -51,10 +51,10 @@ export function StatsCards({
         </span>
       ),
       icon: TrendingUp,
-      iconColor: 'text-indigo-400',
-      iconBg: 'bg-indigo-500/10',
-      border: 'border-indigo-500/10',
-      glow: 'hover:border-indigo-500/30',
+      iconColor: 'text-[var(--primary)]',
+      iconBg: 'bg-[var(--primary)]/10',
+      border: 'border-[var(--primary)]/10',
+      glow: 'hover:border-[var(--primary)]/30',
     },
     {
       title: 'Pending',
@@ -81,18 +81,18 @@ export function StatsCards({
       value: totalInvoices.toString(),
       subtitle: 'Total created',
       icon: FileText,
-      iconColor: 'text-purple-400',
-      iconBg: 'bg-purple-500/10',
-      border: 'border-purple-500/10',
-      glow: 'hover:border-purple-500/30',
+      iconColor: 'text-[var(--primary)]',
+      iconBg: 'bg-[var(--primary)]/10',
+      border: 'border-[var(--primary)]/10',
+      glow: 'hover:border-[var(--primary)]/30',
     },
     {
       title: 'Overdue',
       value: overdueInvoices.toString(),
       subtitle: 'Need follow-up',
       icon: AlertTriangle,
-      iconColor: overdueInvoices > 0 ? 'text-red-400' : 'text-slate-500',
-      iconBg: overdueInvoices > 0 ? 'bg-red-500/10' : 'bg-slate-500/5',
+      iconColor: overdueInvoices > 0 ? 'text-red-400' : 'text-[var(--text-3)]',
+      iconBg: overdueInvoices > 0 ? 'bg-red-500/10' : 'bg-[var(--bg)]0/5',
       border: overdueInvoices > 0 ? 'border-red-500/10' : 'border-slate-500/10',
       glow: overdueInvoices > 0 ? 'hover:border-red-500/30' : 'hover:border-slate-500/20',
     },
@@ -114,9 +114,9 @@ export function StatsCards({
             <div className={clsx('w-9 h-9 rounded-xl flex items-center justify-center mb-4', stat.iconBg)}>
               <Icon className={clsx('w-4 h-4', stat.iconColor)} />
             </div>
-            <p className="text-xs text-slate-500 font-medium mb-1">{stat.title}</p>
-            <p className="text-xl font-bold text-white mb-1">{stat.value}</p>
-            <div className="text-xs text-slate-500">{stat.subtitle}</div>
+            <p className="text-xs text-[var(--text-3)] font-medium mb-1">{stat.title}</p>
+            <p className="text-xl font-bold text-[var(--text-1)] mb-1">{stat.value}</p>
+            <div className="text-xs text-[var(--text-3)]">{stat.subtitle}</div>
           </div>
         )
       })}

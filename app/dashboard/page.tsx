@@ -83,20 +83,31 @@ async function getDashboardData(userId: string) {
       take: 5,
     }),
 
-    // Monthly revenue (last 6 months)
-    prisma.$queryRaw<Array<{ month: Date; revenue: number }>>`
-      SELECT
-        DATE_TRUNC('month', p."paidAt") AS month,
-        SUM(p.amount)::float AS revenue
-      FROM payments p
-      JOIN invoices i ON p."invoiceId" = i.id
-      WHERE i."userId" = ${userId}
-        AND p.status = 'COMPLETED'
-        AND p."paidAt" >= NOW() - INTERVAL '6 months'
-      GROUP BY DATE_TRUNC('month', p."paidAt")
-      ORDER BY month ASC
-    `,
+    // Monthly revenue for last 6 months — fetch completed payments and group in JS
+    // ($queryRaw is not supported by @prisma/adapter-pg driver adapter)
+    prisma.payment.findMany({
+      where: {
+        invoice: { userId },
+        status: 'COMPLETED',
+        paidAt: { gte: new Date(Date.now() - 6 * 30 * 24 * 60 * 60 * 1000) },
+      },
+      select: { paidAt: true, amount: true },
+    }),
   ])
+
+  // Group payments by month for the chart
+  const monthlyMap = new Map<string, number>()
+  for (const p of monthlyRevenue) {
+    if (!p.paidAt) continue
+    const key = `${p.paidAt.getFullYear()}-${String(p.paidAt.getMonth() + 1).padStart(2, '0')}`
+    monthlyMap.set(key, (monthlyMap.get(key) ?? 0) + Number(p.amount))
+  }
+  const monthlyRevenueData = Array.from(monthlyMap.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, revenue]) => ({
+      month: new Date(`${key}-01`),
+      revenue,
+    }))
 
   return {
     totalRevenue: Number(totalRevenue._sum.amount ?? 0),
@@ -107,7 +118,7 @@ async function getDashboardData(userId: string) {
     totalInvoices,
     overdueInvoices,
     recentInvoices,
-    monthlyRevenue,
+    monthlyRevenue: monthlyRevenueData,
   }
 }
 
@@ -128,8 +139,8 @@ export default async function DashboardPage() {
     <div className="space-y-6 animate-fade-in">
       {/* Page header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">Overview</h1>
-        <p className="text-slate-400 text-sm mt-1">Your business at a glance</p>
+        <h1 className="text-2xl font-bold text-[var(--text-1)]">Overview</h1>
+        <p className="text-[var(--text-2)] text-sm mt-1">Your business at a glance</p>
       </div>
 
       {/* Quick actions */}

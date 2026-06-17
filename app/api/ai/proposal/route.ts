@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
+import { prisma } from '@/lib/prisma'
 import { OpenAI } from 'openai'
 import { z } from 'zod'
+
 
 const proposalSchema = z.object({
   clientName: z.string().min(1),
@@ -12,7 +14,6 @@ const proposalSchema = z.object({
   tone: z.enum(['professional', 'friendly', 'assertive']).default('professional'),
 })
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
 const toneInstructions = {
   professional: 'Use formal, polished business language. Be concise and confident.',
@@ -26,12 +27,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || 'dummy' })
+
   const body = await req.json()
   const parsed = proposalSchema.safeParse(body)
 
   if (!parsed.success) {
     return NextResponse.json(
-      { error: parsed.error.errors[0].message },
+      { error: parsed.error.issues?.[0]?.message || 'Validation error' },
       { status: 400 }
     )
   }
@@ -69,18 +72,41 @@ The freelancer's name is ${session.user.name ?? 'the developer'}.`
     stream: true,
   })
 
-  // Return as a ReadableStream for SSE
+  // Return as a ReadableStream for SSE, and persist to DB when complete
   const encoder = new TextEncoder()
+  let fullText = ''
+
   const readable = new ReadableStream({
     async start(controller) {
       for await (const chunk of stream) {
         const text = chunk.choices[0]?.delta?.content ?? ''
         if (text) {
+          fullText += text
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text })}\n\n`))
         }
       }
       controller.enqueue(encoder.encode('data: [DONE]\n\n'))
       controller.close()
+
+      // Persist the completed proposal to the database
+      if (fullText) {
+        try {
+          await prisma.proposal.create({
+            data: {
+              userId: session.user.id,
+              clientName,
+              projectName,
+              projectScope,
+              budget: budget ?? null,
+              timeline: timeline ?? null,
+              tone,
+              content: fullText,
+            },
+          })
+        } catch (err) {
+          console.error('[proposal] Failed to save to DB:', err)
+        }
+      }
     },
   })
 

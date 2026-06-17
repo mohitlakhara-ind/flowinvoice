@@ -10,6 +10,7 @@ datasource db {
   provider = "postgresql"
 }
 
+
 // ==========================================
 // AUTH
 // ==========================================
@@ -30,6 +31,7 @@ model User {
   projects  Project[]
   sessions  Session[]
   accounts  Account[]
+  proposals Proposal[]
 
   @@map("users")
 }
@@ -195,6 +197,27 @@ model Payment {
   invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
 
   @@map("payments")
+}
+
+// ==========================================
+// AI
+// ==========================================
+
+model Proposal {
+  id           String   @id @default(cuid())
+  userId       String
+  clientName   String
+  projectName  String
+  projectScope String   @db.Text
+  budget       String?
+  timeline     String?
+  tone         String   @default("professional")
+  content      String   @db.Text
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("proposals")
 }
 
 // ==========================================

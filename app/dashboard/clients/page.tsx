@@ -23,13 +23,13 @@ export default async function ClientsPage() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Clients</h1>
-          <p className="text-slate-400 text-sm mt-1">{clients.length} client{clients.length !== 1 ? 's' : ''} total</p>
+          <h1 className="text-2xl font-bold text-[var(--text-1)]">Clients</h1>
+          <p className="text-[var(--text-2)] text-sm mt-1">{clients.length} client{clients.length !== 1 ? 's' : ''} total</p>
         </div>
         <Link
           href="/dashboard/clients/new"
           id="add-client-btn"
-          className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-medium transition-all hover:scale-105"
+          className="flex items-center gap-2 px-4 py-2.5 bg-[var(--primary)] hover:bg-[var(--primary)] rounded-xl text-sm font-medium transition-all hover:scale-105"
         >
           <Plus className="w-4 h-4" />
           Add Client
@@ -37,17 +37,17 @@ export default async function ClientsPage() {
       </div>
 
       {clients.length === 0 ? (
-        <div className="glass rounded-2xl border border-[#2a2a3a] p-20 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-[#1a1a24] flex items-center justify-center mx-auto mb-4">
-            <Users className="w-8 h-8 text-slate-500" />
+        <div className="glass rounded-2xl border border-[var(--border)] p-20 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-[var(--surface-2)] flex items-center justify-center mx-auto mb-4">
+            <Users className="w-8 h-8 text-[var(--text-3)]" />
           </div>
-          <h3 className="font-semibold text-white mb-2">No clients yet</h3>
-          <p className="text-sm text-slate-400 mb-6 max-w-sm mx-auto">
+          <h3 className="font-semibold text-[var(--text-1)] mb-2">No clients yet</h3>
+          <p className="text-sm text-[var(--text-2)] mb-6 max-w-sm mx-auto">
             Add your first client to start creating invoices and tracking projects.
           </p>
           <Link
             href="/dashboard/clients/new"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-medium transition-all"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--primary)] hover:bg-[var(--primary)] rounded-xl text-sm font-medium transition-all"
           >
             <Plus className="w-4 h-4" />
             Add Your First Client
@@ -59,34 +59,34 @@ export default async function ClientsPage() {
             <Link
               key={client.id}
               href={`/dashboard/clients/${client.id}`}
-              className="glass glass-hover rounded-2xl p-5 border border-[#2a2a3a] hover:border-[#3a3a50] transition-all hover:scale-[1.01] group block"
+              className="glass glass-hover rounded-2xl p-5 border border-[var(--border)] hover:border-[var(--border-hov)] transition-all hover:scale-[1.01] group block"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/20 flex items-center justify-center text-white font-bold text-sm">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-[var(--primary)]/20 flex items-center justify-center text-[var(--text-1)] font-bold text-sm">
                     {client.name.charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <h3 className="font-semibold text-white group-hover:text-indigo-300 transition-colors">{client.name}</h3>
+                    <h3 className="font-semibold text-[var(--text-1)] group-hover:text-indigo-300 transition-colors">{client.name}</h3>
                     {client.company && (
-                      <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
+                      <p className="text-xs text-[var(--text-3)] flex items-center gap-1 mt-0.5">
                         <Building className="w-3 h-3" />
                         {client.company}
                       </p>
                     )}
                   </div>
                 </div>
-                <ArrowRight className="w-4 h-4 text-slate-600 group-hover:text-indigo-400 transition-colors" />
+                <ArrowRight className="w-4 h-4 text-[var(--text-2)] group-hover:text-[var(--primary)] transition-colors" />
               </div>
 
               <div className="space-y-1.5 mb-4">
-                <p className="text-xs text-slate-400 flex items-center gap-2">
-                  <Mail className="w-3 h-3 text-slate-500" />
+                <p className="text-xs text-[var(--text-2)] flex items-center gap-2">
+                  <Mail className="w-3 h-3 text-[var(--text-3)]" />
                   {client.email}
                 </p>
                 {client.phone && (
-                  <p className="text-xs text-slate-400 flex items-center gap-2">
-                    <Phone className="w-3 h-3 text-slate-500" />
+                  <p className="text-xs text-[var(--text-2)] flex items-center gap-2">
+                    <Phone className="w-3 h-3 text-[var(--text-3)]" />
                     {client.phone}
                   </p>
                 )}
@@ -94,12 +94,12 @@ export default async function ClientsPage() {
 
               <div className="flex items-center gap-4 pt-4 border-t border-[#1e1e2e]">
                 <div className="text-center">
-                  <p className="text-sm font-bold text-white">{client._count.projects}</p>
-                  <p className="text-[10px] text-slate-500">Project{client._count.projects !== 1 ? 's' : ''}</p>
+                  <p className="text-sm font-bold text-[var(--text-1)]">{client._count.projects}</p>
+                  <p className="text-[10px] text-[var(--text-3)]">Project{client._count.projects !== 1 ? 's' : ''}</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-sm font-bold text-white">{client._count.invoices}</p>
-                  <p className="text-[10px] text-slate-500">Invoice{client._count.invoices !== 1 ? 's' : ''}</p>
+                  <p className="text-sm font-bold text-[var(--text-1)]">{client._count.invoices}</p>
+                  <p className="text-[10px] text-[var(--text-3)]">Invoice{client._count.invoices !== 1 ? 's' : ''}</p>
                 </div>
                 <div className="text-center ml-auto">
                   <span className="text-[10px] font-medium px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">

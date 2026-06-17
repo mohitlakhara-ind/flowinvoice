@@ -19,8 +19,8 @@ function formatCurrency(amount: number) {
 function CustomTooltip({ active, payload, label }: any) {
   if (active && payload && payload.length) {
     return (
-      <div className="glass rounded-xl p-3 border border-[#2a2a3a] shadow-xl">
-        <p className="text-xs text-slate-400 mb-1">{label}</p>
+      <div className="glass rounded-xl p-3 border border-[var(--border)] shadow-xl">
+        <p className="text-xs text-[var(--text-2)] mb-1">{label}</p>
         <p className="text-sm font-bold text-indigo-300">
           {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(payload[0].value)}
         </p>
@@ -50,15 +50,15 @@ export function RevenueChart({ data }: RevenueChartProps) {
       ]
 
   return (
-    <div className="glass rounded-2xl p-6 border border-[#2a2a3a] h-full">
+    <div className="glass rounded-2xl p-6 border border-[var(--border)] h-full">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="font-semibold text-white">Revenue Overview</h3>
-          <p className="text-xs text-slate-500 mt-0.5">Last 6 months</p>
+          <h3 className="font-semibold text-[var(--text-1)]">Revenue Overview</h3>
+          <p className="text-xs text-[var(--text-3)] mt-0.5">Last 6 months</p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-indigo-500" />
-          <span className="text-xs text-slate-400">Revenue</span>
+          <span className="w-2 h-2 rounded-full bg-[var(--primary)]" />
+          <span className="text-xs text-[var(--text-2)]">Revenue</span>
         </div>
       </div>
 

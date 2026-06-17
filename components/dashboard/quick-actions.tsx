@@ -7,8 +7,8 @@ const actions = [
     icon: FileText,
     label: 'New Invoice',
     description: 'Create & send',
-    color: 'text-indigo-400',
-    bg: 'bg-indigo-500/10 hover:bg-indigo-500/20 border-indigo-500/20 hover:border-indigo-500/40',
+    color: 'text-[var(--primary)]',
+    bg: 'bg-[var(--primary)]/10 hover:bg-[var(--primary)]/20 border-[var(--primary)]/20 hover:border-[var(--primary)]/40',
   },
   {
     href: '/dashboard/clients/new',
@@ -24,15 +24,15 @@ const actions = [
     label: 'Log Time',
     description: 'Track hours',
     color: 'text-amber-400',
-    bg: 'bg-amber-500/10 hover:bg-amber-500/20 border-amber-500/20 hover:border-amber-500/40',
+    bg: 'bg-amber-500/10 hover:bg-[var(--border)]mber-500/20 border-amber-500/20 hover:border-amber-500/40',
   },
   {
     href: '/dashboard/ai',
     icon: Bot,
     label: 'AI Proposal',
     description: 'Draft with GPT-4o',
-    color: 'text-purple-400',
-    bg: 'bg-purple-500/10 hover:bg-purple-500/20 border-purple-500/20 hover:border-purple-500/40',
+    color: 'text-[var(--primary)]',
+    bg: 'bg-[var(--primary)]/10 hover:bg-[var(--primary)]/20 border-[var(--primary)]/20 hover:border-[var(--primary)]/40',
   },
 ]
 
@@ -52,8 +52,8 @@ export function QuickActions() {
               <Icon className={`w-4 h-4 ${action.color}`} />
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-semibold text-white truncate">{action.label}</p>
-              <p className="text-xs text-slate-500 truncate">{action.description}</p>
+              <p className="text-sm font-semibold text-[var(--text-1)] truncate">{action.label}</p>
+              <p className="text-xs text-[var(--text-3)] truncate">{action.description}</p>
             </div>
             <Plus className={`w-3.5 h-3.5 ${action.color} ml-auto flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity`} />
           </Link>
