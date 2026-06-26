@@ -2,7 +2,13 @@ import Link from 'next/link'
 import { Zap, Mail, ArrowLeft } from 'lucide-react'
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = { title: 'Forgot Password — Soloflow' }
+export const metadata: Metadata = {
+  title: 'Forgot Password | Soloflow',
+  description: 'Recover or reset your Soloflow account password securely.',
+  alternates: {
+    canonical: '/forgot-password',
+  },
+}
 
 export default function ForgotPasswordPage() {
   return (

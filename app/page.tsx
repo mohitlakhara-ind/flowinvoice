@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import {
   ArrowRight, Zap, Shield, FileText, CreditCard, Bot,
@@ -9,6 +10,14 @@ import { ModeToggle } from '@/components/mode-toggle'
 import { LandingProfileDropdown } from '@/components/landing-profile-dropdown'
 
 import { auth } from '@/auth'
+
+export const metadata: Metadata = {
+  title: 'Soloflow — Smart Invoicing, AI Proposals & Client Portal SaaS',
+  description: 'AI-powered invoicing and project suite for freelancers. Log billable hours, generate custom contracts, accept Razorpay payments, and stream GPT-4o proposals.',
+  alternates: {
+    canonical: '/',
+  },
+}
 
 // Section 4: Problem Data
 const problems = [
